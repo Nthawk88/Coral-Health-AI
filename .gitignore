@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+
+# Virtual env
+.venv/
+.env
+
+# Build / Dist
+build/
+dist/
+.eggs/
+
+# Cache / Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS / Editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# App specific
+backend/uploads/
+model/training_summary.txt
+
+# Logs
+logs/
+*.log
+
+# Node (if any future assets)
+node_modules/
