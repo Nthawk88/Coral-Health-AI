@@ -11,18 +11,16 @@ import random
 import json
 import re
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)
 
-# Configuration
 try:
-    from backend import config as cfg  # when running from project root
+    from backend import config as cfg
 except Exception:
-    import config as cfg  # when running inside backend
+    import config as cfg
 
 os.makedirs(cfg.UPLOAD_FOLDER, exist_ok=True)
 
@@ -33,7 +31,6 @@ def sanitize_filename(name: str) -> str:
     safe = FILENAME_SAFE_RE.sub('_', base)
     return safe[:150]
 
-# Load labels.json if available
 def load_class_names():
     try:
         if os.path.exists(cfg.LABELS_PATH):
@@ -51,7 +48,6 @@ def load_class_names():
 
 CLASS_NAMES = load_class_names()
 
-# Model loading with error handling
 try:
     if not os.path.exists(cfg.MODEL_PATH):
         logger.warning("Model file not found. Running in demo mode.")
@@ -69,7 +65,7 @@ def allowed_file(filename):
 def verify_image_bytes(image_data: bytes) -> None:
     try:
         with Image.open(io.BytesIO(image_data)) as im:
-            im.verify()  # raises if not a valid image
+            im.verify()
     except Exception as e:
         raise ValueError('Uploaded file is not a valid image') from e
 

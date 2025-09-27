@@ -8,7 +8,6 @@ from sklearn.metrics import confusion_matrix, classification_report
 
 train_dir = 'coral_dataset'
 
-# Stronger data augmentation
 datagen = ImageDataGenerator(
     rescale=1./255,
     validation_split=0.2,
@@ -43,14 +42,12 @@ validation_generator = datagen.flow_from_directory(
 print('Class indices:', train_generator.class_indices)
 num_classes = len(train_generator.class_indices)
 
-# Persist ordered class names to labels.json
 labels = sorted(train_generator.class_indices.items(), key=lambda kv: kv[1])
 ordered_class_names = [name for name, idx in labels]
 os.makedirs('model', exist_ok=True)
 with open('model/labels.json', 'w', encoding='utf-8') as f:
     json.dump({'classes': ordered_class_names}, f, ensure_ascii=False, indent=2)
 
-# Model with transfer learning and fine-tuning
 base_model = tf.keras.applications.MobileNetV2(weights='imagenet', include_top=False, input_shape=(224,224,3))
 base_model.trainable = True
 for layer in base_model.layers[:-20]:
@@ -80,7 +77,6 @@ history = model.fit(
 
 model.save(checkpoint_path)
 
-# Evaluate and print confusion matrix
 val_steps = max(1, validation_generator.samples // validation_generator.batch_size)
 validation_generator.reset()
 preds = model.predict(validation_generator, steps=val_steps, verbose=1)
@@ -94,6 +90,5 @@ print(classification_report(y_true, y_pred, labels=labels_idx[:num_classes], tar
 print('\nConfusion Matrix:')
 print(confusion_matrix(y_true, y_pred, labels=labels_idx[:num_classes]))
 
-# Save training summary
 with open('model/training_summary.txt', 'w', encoding='utf-8') as f:
     f.write(str(history.history))
